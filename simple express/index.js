@@ -1,8 +1,8 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const Album = require("./modles/Album_produc");  
-// const view =require ("./Data.js")
+const Album = require("./models/Album");  
+
 const path = require('path');
 const { error } = require('console');
 
