@@ -1,4 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+const { Schema } = mongoose;
+mongoose.connect(process.env.MONGODB_URL)
+  .then(() => {
+    console.log('The database is connected!');
+  
+  })
+  .catch((error) => {
+    console.error("Database connection failed:", error);  // Log detailed error
+  });
 
 // Define the schema for the product
 const albumSchema = mongoose.Schema({
@@ -24,6 +33,6 @@ const albumSchema = mongoose.Schema({
 }, { timestamps: true }); // Correct placement of timestamps option
 
 // Create a model from the schema
-const album = mongoose.model('album', albumSchema);
+export const Album = mongoose.model('Album', albumSchema);
 
-module.exports = album;
+

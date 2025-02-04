@@ -1,10 +1,11 @@
-const express = require('express');
+import express from 'express';
+import 'dotenv/config'
 const app = express();
-const mongoose = require('mongoose');
-const Album = require("./models/Album");  
 
-const path = require('path');
-const { error } = require('console');
+import { Album} from "./models/album.js";
+
+
+
 
 //middleware
 app.use(express.json());
@@ -13,7 +14,7 @@ app.use(express.urlencoded({extended:true}));
 
 
 // Set the static folder
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('./public')); // set location for static files
 app.set("view engine", "ejs");
 
 
@@ -115,13 +116,6 @@ app.delete('/api/album/:id', async (req, res) => {
 
 // Database connection and server setup
 const PORT = process.env.PORT || 3000;
-mongoose.connect('mongodb+srv://melkam9024:NathanBarkon@backend.afha5.mongodb.net/?retryWrites=true&w=majority&appName=backend')
-  .then(() => {
-    console.log('The database is connected!');
-    app.listen(PORT, () => {
-      console.log(`Server started on PORT ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error("Database connection failed:", error);  // Log detailed error
-  });
+app.listen(PORT, () => {
+  console.log(`Server started on PORT ${PORT}`);
+});
