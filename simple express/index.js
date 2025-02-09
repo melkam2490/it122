@@ -1,8 +1,12 @@
 import express from 'express';
-import 'dotenv/config'
-const app = express();
 
-import { Album} from "./models/album.js";
+const app = express();
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+import { Album} from "./models/Album.js";
+import data from "./data.js";
 
 
 
@@ -17,19 +21,23 @@ app.use(express.urlencoded({extended:true}));
 app.use(express.static('./public')); // set location for static files
 app.set("view engine", "ejs");
 
-
-app.get('/', async (req, res) => {
-  try {
-    const albums = await Album.find({}); // Fetch all albums from the database
-    res.render('home', { albums });  // Pass albums to the view
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+// app.get('/', (req, res) => {
+//   const albums = data.getAll(); // Get all albums from the mock data
+//   res.render('home', { albums });  // Pass the albums to the view
+// });
+app.get("/", (req, res) => {
+  const albums = [
+    { title: "Abbey Road", artist: "The Beatles", releaseYear: 1969 },
+    { title: "The Dark Side of the Moon", artist: "Pink Floyd", releaseYear: 1973 },
+    { title: "Back in Black", artist: "AC/DC", releaseYear: 1980 },
+    { title: "Thriller", artist: "Michael Jackson", releaseYear: 1982 }
+  ];
+  res.render("home", { albums: JSON.stringify(albums) });
 });
-
-app.get('/detail', async (req, res) => {
+app.get('/details', async (req, res) => {
   try {
-    const album = await Album.findOne({ title: req.query.title }); // Find the album by title
+
+    const album = await Album.findOne({ title: req.query.title }); // Find album by title
     if (!album) {
       return res.status(404).json({ message: 'Album not found' });
     }

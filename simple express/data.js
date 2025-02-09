@@ -32,26 +32,19 @@ function getItem(title) {
   return albums.find(album => album.title === title);
 }
 
-// Function to add a new album
-function addAlbum(newAlbum) {
-  albums.push(newAlbum);
-  return newAlbum;
-}
-
 // Function to delete an album by title
 function deleteAlbum(title) {
   const index = albums.findIndex(album => album.title === title);
   if (index !== -1) {
-    const deletedAlbum = albums.splice(index, 1);
-    return deletedAlbum;
+    const deletedAlbum = albums.splice(index, 1); // Delete the album
+    return deletedAlbum[0]; // Return the deleted album
   }
-  return null;
+  return null; // Return null if album not found
 }
 
-// Export functions to be used in other parts of the app
-module.exports = {
+// Default export of functions
+export default {
   getAll,
   getItem,
-  addAlbum,
   deleteAlbum
 };

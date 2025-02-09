@@ -1,14 +1,20 @@
 import mongoose from 'mongoose';
-const { Schema } = mongoose;
-mongoose.connect(process.env.MONGODB_URL)
+import dotenv from 'dotenv';
+
+// Load environment variables
+dotenv.config();  
+
+// Now access the MongoDB URL
+const mongoURI = process.env.MONGODB_URL;
+
+
+mongoose.connect(mongoURI)
   .then(() => {
-    console.log('The database is connected!');
-  
+    console.log(' Database connected successfully!');
   })
   .catch((error) => {
-    console.error("Database connection failed:", error);  // Log detailed error
+    console.error("Database connection failed:", error);
   });
-
 // Define the schema for the product
 const albumSchema = mongoose.Schema({
   artist: {

@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= result.title %> - Details</title>
-     <!-- Link to the CSS file -->
-     <link rel="stylesheet" href="./css/styles/styles.css">
+    <title><%= result ? result.title : 'Album Not Found' %> - Details</title>
+    <link rel="stylesheet" href="/css/styles/styles.css">
 </head>
 <body>
-    <h1>Details for <%= result.title %></h1>
-    
-    <p><strong>Artist:</strong> <%= result.artist %></p>
-    <p><strong>Release Year:</strong> <%= result.releaseYear %></p>
+    <a href="/">Home</a>
 
-    <!-- Provide a link back to the albums list -->
-    <a href="/">Back to Albums List</a>
-
-    <!-- Provide a link to delete this album  when do my delete file-->
-    <a href="/delete?title=<%= result.title %>">Delete this album</a>
+    <% if (result) { %>
+        <h2><%= result.title %> details</h2>
+        <ul>
+            <li><strong>Artist:</strong> <%= result.artist %></li>
+            <li><strong>Release Year:</strong> <%= result.releaseYear %></li>
+        </ul>
+    <% } else { %>
+        <h2><%= title %> not found</h2>
+    <% } %>
 </body>
 </html>
