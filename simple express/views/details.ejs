@@ -3,20 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= result ? result.title : 'Album Not Found' %> - Details</title>
-    <link rel="stylesheet" href="/css/styles/styles.css">
+    <title>Album Details</title>
+
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-    <a href="/">Home</a>
 
-    <% if (result) { %>
-        <h2><%= result.title %> details</h2>
-        <ul>
-            <li><strong>Artist:</strong> <%= result.artist %></li>
-            <li><strong>Release Year:</strong> <%= result.releaseYear %></li>
-        </ul>
-    <% } else { %>
-        <h2><%= title %> not found</h2>
-    <% } %>
+    <h2>Album Details</h2>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      
+        const album = <% JSON.stringify(album) %>; 
+
+        const AlbumDetails = () => {
+            return (
+                <div>
+                    <h2>{album.title}</h2>
+                    <p>Artist: {album.artist}</p>
+                    <p>Release Year: {album.releaseYear}</p>
+                    <button onClick={() => window.history.back()}>Back to List</button>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<AlbumDetails />, document.getElementById('root'));
+    </script>
+
 </body>
 </html>
