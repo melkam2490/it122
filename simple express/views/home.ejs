@@ -1,6 +1,143 @@
-<div id="root"></div>
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Page</title>
+    <script src="https://unpkg.com/react/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+<body>
+    <h1>Album List</h1>
+    <div id="root"></div>
+    <script type="text/babel">
+        // Create a variable with unescaped JS data from the server
+      
 
+        // Click event handler
+        const showDetail = (event) => {
+            // Navigate to detail page with album title
+            window.location.href = "/detail?title=" + event.target.innerText;
+        }
+
+        // React component to display the list of albums
+        const Albums = (props) => {
+            // props is an array
+            const listItems = props.data.map((item) =>
+                <li key={item._id} id={item._id} onClick={props.clickHandler}>
+                    {item.title}
+                </li>
+            );
+            return <ul>{listItems}</ul>;
+        }
+
+        // Render the React component
+        ReactDOM.render(
+            <div>
+                <Albums data={items} clickHandler={showDetail} />
+            </div>,
+            document.getElementById('root')
+        );
+    </script>
+</body>
+</html> -->
+
+
+
+
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>React App Demo</title>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <!-- Don't use this in production: -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<h2>React Demo</h2>
+
+<div id="root"></div>
 <script type="text/babel">
-  let items = <%-items %>;
-  ReactDOM.render(<HomePage items={JSON.stringify(items)} />, document.getElementById("root"));
+
+    // return a list of albums
+    const ItemList = (props) => {
+        // props is an array
+        const listItems = props.data.map((item) =>
+        <li key={item._id} id={item._id} onClick={props.clickHandler}>
+            {item.title}
+        </li>);
+        return <ul>{listItems}</ul>
+    }
+
+    const ItemDetail = (props) => {
+        return <div>
+        <hr />
+            <h3>Album Details</h3>
+            <form>
+                Title: <input type="text" name="title" value={props.item.title || ""} onChange={props.handleChange} /><br/>
+                Artist: <input type="text" name="artist" value={props.item.artist || ""} onChange={props.handleChange}/><br/>
+                Release Date: <input type="text" name="releaseDate" value={props.item.releaseDate || ""} onChange={props.handleChange} /><br/>
+            </form>
+            <button name="clear" onClick={props.clearForm}>Clear</button>&nbsp;
+        </div>
+    }
+
+
+    const App = (props) => {
+        const [items, setItems] = React.useState(<%- albums %>);
+        const [currentItem, setCurrentItem] = React.useState({});
+
+        // list click event handler
+        const selectItem = (event) => {
+            const found = items.find((item) => {
+                return item.title === event.target.innerText;
+            });
+            setCurrentItem(found);
+        }
+
+        const clearForm = () => {
+            setCurrentItem({});
+        }
+
+        // update list state
+        const handleChange = (event) => {
+          let newItem = { ...currentItem };
+          newItem[event.target.name] = event.target.value;
+          // update currentItem state
+          setCurrentItem(newItem);
+          // update list state
+          items.find((item, index) => {
+            if (item._id == newItem._id) {
+                items[index] = newItem;
+                setItems([...items]);
+            }
+          })
+        }
+
+        return (
+            <div> 
+                <h2>Albums Inventory</h2>
+                <ItemList data={items} clickHandler={selectItem} />
+                <ItemDetail
+                  item={currentItem}
+                  handleChange={handleChange}
+                  clearForm={clearForm}
+                />
+            </div>
+        );
+
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render( <App/>);
+
 </script>
+</body>
+</html>
