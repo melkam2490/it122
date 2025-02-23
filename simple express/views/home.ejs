@@ -44,10 +44,7 @@
 </body>
 </html> -->
 
-
-
-
-
+<!-- 
 <html>
 <head>
     <meta charset="utf-8">
@@ -56,8 +53,8 @@
 
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <!-- Don't use this in production: -->
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <Don't use this in production: -->
+    <!-- <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
 <h2>React Demo</h2>
@@ -90,7 +87,7 @@
 
 
     const App = (props) => {
-        const [items, setItems] = React.useState(<%- albums %>);
+        const [items, setItems] = React.useState(<%-  %>);
         const [currentItem, setCurrentItem] = React.useState({});
 
         // list click event handler
@@ -129,15 +126,139 @@
                   handleChange={handleChange}
                   clearForm={clearForm}
                 />
-            </div>
+            </div> -->
         );
 
     }
 
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
-    root.render( <App/>);
+    <!-- root.render( <App/>); -->
 
+<!-- </script>
+</body>
+</html> --> --> -->
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>React App Demo</title>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<h2>React Demo</h2>
+
+<div id="root"></div>
+<script type="text/babel">
+
+    const ItemList = ({ data, clickHandler }) => {
+        return (
+            <ul>
+                {data.map((item) => (
+                    <li key={item._id} id={item._id} onClick={clickHandler}>
+                        {item.title}
+                    </li>
+                ))}
+            </ul>
+        );
+    };
+
+    const ItemDetail = ({ item, handleChange, clearForm, saveItem, deleteItem }) => {
+        return (
+            <div>
+                <hr />
+                <h3>Album Details</h3>
+                <form>
+                    Title: <input type="text" name="title" value={item.title || ""} onChange={handleChange} /><br/>
+                    Artist: <input type="text" name="artist" value={item.artist || ""} onChange={handleChange}/><br/>
+                    Release Date: <input type="text" name="releaseDate" value={item.releaseDate || ""} onChange={handleChange} /><br/>
+                </form>
+                <button onClick={clearForm}>Clear</button>&nbsp;
+                <button onClick={saveItem}>Save</button>&nbsp;
+                {item._id && <button onClick={deleteItem}>Delete</button>}
+            </div>
+        );
+    };
+
+    const App = () => {
+        const [items, setItems] = React.useState([]);
+        const [currentItem, setCurrentItem] = React.useState({});
+
+        // Load data after component mounts
+        React.useEffect(() => {
+            fetch("/api/albums")
+                .then(response => response.json())
+                .then(data => setItems(data))
+                .catch(error => console.error("Error loading data:", error));
+        }, []);
+
+        const selectItem = (event) => {
+            const found = items.find(item => item._id === event.target.id);
+            setCurrentItem(found || {});
+        };
+
+        const clearForm = () => {
+            setCurrentItem({});
+        };
+
+        const handleChange = (event) => {
+            setCurrentItem({ ...currentItem, [event.target.name]: event.target.value });
+        };
+
+        const saveItem = () => {
+            if (currentItem._id) {
+                // Update existing item
+                fetch(`/api/albums/${currentItem._id}`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(currentItem),
+                }).then(() => {
+                    setItems(items.map(item => item._id === currentItem._id ? currentItem : item));
+                });
+            } else {
+                // Create new item
+                fetch("/api/albums", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(currentItem),
+                })
+                .then(response => response.json())
+                .then(newItem => {
+                    setItems([...items, newItem]);
+                    setCurrentItem({});
+                });
+            }
+        };
+
+        const deleteItem = () => {
+            fetch(`/api/albums/${currentItem._id}`, { method: "DELETE" })
+                .then(() => {
+                    setItems(items.filter(item => item._id !== currentItem._id));
+                    setCurrentItem({});
+                });
+        };
+
+        return (
+            <div>
+                <h2>Albums Inventory</h2>
+                <ItemList data={items} clickHandler={selectItem} />
+                <ItemDetail
+                    item={currentItem}
+                    handleChange={handleChange}
+                    clearForm={clearForm}
+                    saveItem={saveItem}
+                    deleteItem={deleteItem}
+                />
+            </div>
+        );
+    };
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
 </script>
 </body>
 </html>
